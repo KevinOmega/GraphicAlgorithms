@@ -1,11 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Grid from './Grid';
 import { useGlobalContext } from './context';
+import Form from './Form';
+import Parameters from './Parameters';
 
 
 function App() {
-  const {sizeMatrix,setSizeMatrix,setMatrix} = useGlobalContext();
+  const {sizeMatrix,setSizeMatrix,setMatrix,generateBtn} = useGlobalContext();
 
   useEffect(() => {
     console.log("generating")
@@ -13,27 +15,29 @@ function App() {
     for (let index = 0; index < sizeMatrix; index++) {
       tempMatrix[index] = {};
       for (let j = 0; j < sizeMatrix; j++) {
-        tempMatrix[index][j] = false;
+        tempMatrix[index][j] = {right : false, left : false};
       }
     }
     setMatrix(tempMatrix);
   },[setMatrix, setSizeMatrix, sizeMatrix])
 
   return (
-    <div className="App">
-      <form className='w-50 d-flex justify-content-center'>
-        <div className='form-item d-flex justify-content-center align-items-center'>
-          <label className='form-label me-3' htmlFor='matrix-input'>Tamaño de la matriz:</label>
-          <input className='form-control w-25' id='matrix-input' type='number'/>
-        </div>
-      </form>
+    <div className="App py-5">
+      <Form />
       <div className='app-center'>
-        <div className='container'>
-          <Grid n={sizeMatrix}></Grid>
+        <div className='container d-flex flex-column align-items-center'>
+          <h3>Algoritmo Normal</h3>
+          <Grid n={sizeMatrix} type={"left"}></Grid>
         </div>
-        <div className='container'>
-          <Grid n={sizeMatrix}></Grid>
+        <div className='container d-flex flex-column align-items-center'>
+        <h3>Algoritmo Mejorado</h3>
+          <Grid n={sizeMatrix} type={"right"}></Grid>
         </div>
+      </div>
+      <Parameters/>
+      <div className='btns pt-5'>
+        <button className='btn btn-light me-5' onClick={generateBtn}>Generar</button>
+        <button className='btn btn-warning'>Limpiar</button>
       </div>
     </div>
   );
