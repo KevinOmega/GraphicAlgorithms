@@ -26,6 +26,7 @@ const AppProvider = ({ children }) => {
   }
 
   const generateBtn = () => {
+    
     switch (Number(algorithms)) {
       case 1:
         drawLine(Number(parameter.x1),Number(parameter.y1),Number(parameter.x2),Number(parameter.y2),"left");
@@ -136,30 +137,31 @@ const AppProvider = ({ children }) => {
 
   const DDA = async(x0, y0, x1, y1,type) =>  {
     const tempMatrix = matrix;
-    let dx = Math.abs(x0 - x1);
-    let dy = Math.abs(y0 - y1);
-
-    let steps = Math.max(dx, dy);
-
-    let xs = dx / steps;
-    let ys = dy / steps;
-
+    let dx = x1 - x0;
+    let dy = y1 - y0;
     let x = x0;
     let y = y0;
-
-
-    for (let i = 0; i < steps; i++) {
-        // append the x,y coordinates in respective arrays
-        await sleep(100).then(() =>{
-          setMatrix({...drawPoint(tempMatrix,x,y,type)})
-        }).then(()=>{
-          x = x + xs;
-          y = y + ys;
-        })
-
-        // increment the values
-        
+    let steps;
+    if (Math.abs(dx) > Math.abs(dy)) {
+        steps = Math.abs(dx);
+    } else {
+        steps = Math.abs(dy);
     }
+    if (steps === 0) {
+      await sleep(delay).then(() => {
+        setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type)});
+      })
+        return;
+    }
+    let xs = dx / steps;
+    let ys = dy / steps;
+        for (let i = 0; i <= steps; i++) {
+          await sleep(delay).then(() => {
+            setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type)});
+            x = x + xs;
+            y = y + ys;
+          }) 
+      }   
   }
 
 
