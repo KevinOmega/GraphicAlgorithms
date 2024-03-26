@@ -12,35 +12,28 @@ const AppProvider = ({ children }) => {
   const [parameter,setParameters] = useState({
     x1 : 0,x2 : sizeMatrix - 1,y1: 0, y2 : sizeMatrix - 1,xc : 25,yc : 25, r : 20
   })
+  const [delay,setDelay] = useState(200)
 
 
   const drawPoint = (tempMatrix,x,y,type) => {
-    if(x < 0){
-      x = 0;
+    if(x < 0 || x > sizeMatrix - 1 || y < 0 || y > sizeMatrix - 1){
+      return tempMatrix;
+    }else{
+      tempMatrix[y][x] = {...matrix[y][x], [type] : true}
+      return tempMatrix;
     }
-    if( y < 0){
-      y = 0;
-    }
-    if(x > sizeMatrix - 1){
-      x = sizeMatrix - 1;
-    }
-    if(y > sizeMatrix - 1){
-      y = sizeMatrix - 1;
-    }
-    tempMatrix[y][x] = {...matrix[y][x], [type] : true}
-    return tempMatrix;
+    
   }
 
   const generateBtn = () => {
     switch (Number(algorithms)) {
       case 1:
-        // DDA(parameter.x1,parameter.y1,parameter.x2,parameter.y2,"left");
-        bresenhamLineas(Number(parameter.x1),Number(parameter.y1),Number(parameter.x2),Number(parameter.y2),"right");
-        DDA(Number(parameter.x1),Number(parameter.y1),Number(parameter.x2),Number(parameter.y2),"left");
+        drawLine(Number(parameter.x1),Number(parameter.y1),Number(parameter.x2),Number(parameter.y2),"left");
+        DDA(Number(parameter.x1),Number(parameter.y1),Number(parameter.x2),Number(parameter.y2),"right");
 
         break;
       case 2:
-        bresenhamCircunferencia(Number(parameter.xc),Number(parameter.yc),Number(parameter.r),"left");
+        circunferenciaNormal(Number(parameter.xc),Number(parameter.yc),Number(parameter.r),"left");
         bresenhamCircunferencia(Number(parameter.xc),Number(parameter.yc),Number(parameter.r),"right");
         break;
       default:
@@ -57,8 +50,7 @@ const AppProvider = ({ children }) => {
 
     let y = y1;
     for (let x = x1; x <= x2; x++) {
-      console.log(x);
-      await sleep(100).then(() =>{
+      await sleep(delay).then(() =>{
         setMatrix({...drawPoint(tempMatrix,x,y,type)})
         slope_error_new = slope_error_new + m_new;
 
@@ -76,7 +68,8 @@ const AppProvider = ({ children }) => {
       let y = r;
       let d = 3 - 2 * r;
       while (x <= y) {
-        await sleep(100).then(() =>{
+        console.log(x,y)
+        await sleep(delay).then(() =>{
           setMatrix({...drawPoint(tempMatrix,xc + x,yc + y,type)});
           setMatrix({...drawPoint(tempMatrix,xc + y,yc + x,type)});
           setMatrix({...drawPoint(tempMatrix,xc - x,yc + y,type)});
@@ -85,7 +78,7 @@ const AppProvider = ({ children }) => {
           setMatrix({...drawPoint(tempMatrix,xc - y,yc - x,type)});
           setMatrix({...drawPoint(tempMatrix,xc + x,yc - y,type)});
           setMatrix({...drawPoint(tempMatrix,xc + y,yc - x,type)});
-        }).then(() => {
+
           if (d <= 0) {
             d += 4 * x + 6;
         } else {
@@ -95,9 +88,51 @@ const AppProvider = ({ children }) => {
         x++;
         })
       }
-
     }
 
+
+    const circunferenciaNormal = async(xc,yc,r,type) => {
+      const tempMatrix = matrix;
+      for (let x = 0; x < sizeMatrix; x++) {
+        let operation = Math.pow(r,2) - Math.pow(xc - x,2);
+        if (operation >= 0) {
+          let y1 = yc + Math.round(Math.sqrt(operation));
+          let y2 = yc - Math.round(Math.sqrt(operation));
+          console.log(x,y1,y2)
+          await sleep(delay).then(() => {
+            setMatrix({...drawPoint(tempMatrix,x,y1,type)});
+            setMatrix({...drawPoint(tempMatrix,x,y2,type)});
+          });
+        }
+      }
+    }
+
+    const drawLine = async(x1, y1, x2, y2,type) => {
+      const tempMatrix = matrix;
+      let m = (y2 - y1) / (x2 - x1);
+      let b = y1 - m * x1;
+  
+      if (Math.abs(m) < 1) {
+          let dx = x2 > x1 ? 1 : -1;
+          while (x1 !== x2) {
+              x1 += dx;
+              let y = m * x1 + b;
+              await sleep(delay).then(() => {
+                setMatrix({...drawPoint(tempMatrix,x1, Math.round(y),type)});
+              })
+              
+          }
+      } else {
+          let dy = y2 > y1 ? 1 : -1;
+          while (y1 !== y2) {
+              y1 += dy;
+              let x = (y1 - b) / m;
+              await sleep(delay).then(() => {
+                setMatrix({...drawPoint(tempMatrix,Math.round(x), y1,type)});
+              })
+          }
+      }  
+  }
 
   const DDA = async(x0, y0, x1, y1,type) =>  {
     const tempMatrix = matrix;
@@ -106,8 +141,8 @@ const AppProvider = ({ children }) => {
 
     let steps = Math.max(dx, dy);
 
-    let xinc = dx / steps;
-    let yinc = dy / steps;
+    let xs = dx / steps;
+    let ys = dy / steps;
 
     let x = x0;
     let y = y0;
@@ -118,8 +153,8 @@ const AppProvider = ({ children }) => {
         await sleep(100).then(() =>{
           setMatrix({...drawPoint(tempMatrix,x,y,type)})
         }).then(()=>{
-          x = x + xinc;
-          y = y + yinc;
+          x = x + xs;
+          y = y + ys;
         })
 
         // increment the values
