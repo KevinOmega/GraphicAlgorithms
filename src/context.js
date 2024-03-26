@@ -6,11 +6,12 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [itemSize, setItemSize] = useState(10);
-  const [sizeMatrix,setSizeMatrix] = useState(50);
+  const [sizeMatrix,setSizeMatrix] = useState(100);
   const [matrix,setMatrix] = useState({});
   const [algorithms,setAlgorithms] = useState(1)
   const [parameter,setParameters] = useState({
-    x1 : 0,x2 : sizeMatrix - 1,y1: 0, y2 : sizeMatrix - 1,xc : 25,yc : 25, r : 20
+    x1 : 0,x2 : sizeMatrix - 1,y1: 0, y2 : sizeMatrix - 1,
+    xc : Math.round(sizeMatrix/2),yc : Math.round(sizeMatrix/2), r : Math.round(sizeMatrix/2)
   })
   const [delay,setDelay] = useState(200)
 
@@ -41,26 +42,6 @@ const AppProvider = ({ children }) => {
         break;
     }
     
-  }
-
-
-  const bresenhamLineas = async(x1, y1, x2, y2,type) => {
-    const tempMatrix = matrix;
-    let m_new = 2 * (y2 - y1);
-    let slope_error_new = m_new - (x2 - x1);
-
-    let y = y1;
-    for (let x = x1; x <= x2; x++) {
-      await sleep(delay).then(() =>{
-        setMatrix({...drawPoint(tempMatrix,x,y,type)})
-        slope_error_new = slope_error_new + m_new;
-
-        if (slope_error_new >= 0) {
-            y = y + 1;
-            slope_error_new = slope_error_new - 2 * (x2 - x1);
-        }
-      })
-    }
   }
 
     const bresenhamCircunferencia = async(xc,yc,r,type) => {
@@ -164,6 +145,17 @@ const AppProvider = ({ children }) => {
       }   
   }
 
+  const clean = () => {
+    const tempMatrix = {}
+    for (let index = 0; index < sizeMatrix; index++) {
+      tempMatrix[index] = {};
+      for (let j = 0; j < sizeMatrix; j++) {
+        tempMatrix[index][j] = {right : false, left : false};
+      }
+    }
+    setMatrix(tempMatrix);
+  }
+
 
 
   return (
@@ -178,7 +170,10 @@ const AppProvider = ({ children }) => {
     setAlgorithms,
     generateBtn,
     parameter,
-    setParameters
+    setParameters,
+    delay,
+    setDelay,
+    clean
      }}>
       {children}
     </AppContext.Provider>
