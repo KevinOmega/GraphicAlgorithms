@@ -37,3 +37,25 @@
 .form-control{
   width: 40% !important;
 }
+
+.table{
+  min-height: 100vh;
+  margin: 5rem;
+  padding: 0 2rem;
+}
+
+.table-center{
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.col {
+  border: 1px solid #ccc;
+  border-radius: 15px !important; 
+  display: flex;
+  height: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  text-align: center;
+}

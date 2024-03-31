@@ -4,6 +4,7 @@ import Grid from './Grid';
 import { useGlobalContext } from './context';
 import Form from './Form';
 import Parameters from './Parameters';
+import Table from './Table';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
         <button className='btn btn-light me-5' onClick={generateBtn}>Generar</button>
         <button className='btn btn-warning' onClick={clean}>Limpiar</button>
       </div>
+      <Table/>
     </div>
   );
 }
