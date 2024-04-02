@@ -53,6 +53,7 @@ const AppProvider = ({ children }) => {
             y1 = Math.floor(Math.random() * sizeMatrix);
             y2 = Math.floor(Math.random() * sizeMatrix);
           }
+          
         break;
       case 2:
           let {xc,yc,r} = parameter;

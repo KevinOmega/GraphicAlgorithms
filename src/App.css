@@ -47,15 +47,22 @@
 .table-center{
   display: flex;
   flex-direction: column;
-  
+  padding: 0 10rem;
 }
 
 .col {
   border: 1px solid #ccc;
-  border-radius: 15px !important; 
   display: flex;
-  height: 2rem;
-  align-items: flex-start;
+  height: 1.75rem;
+  align-items: center;
   justify-content: center;
   text-align: center;
+}
+.col p {
+  margin-top: 1rem;
+}
+
+.rect{
+  width: 1.5rem;
+  height: 1.5rem;
 }

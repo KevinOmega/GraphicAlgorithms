@@ -19,6 +19,7 @@ const Table = () => {
                         <div className='col col-2'>
                             <p className='text-dark'>N</p>
                         </div>
+                        
                          <div className='col col-5'>
                             <p className='text-dark'>Algoritmo normal</p>
                         </div>
@@ -31,7 +32,7 @@ const Table = () => {
                 {goodTimes.map((time,index) => {
                     console.log(time,"time")
                 return (
-                    <div className='row' key={index}>
+                    <div className='row' key={index} style={{backgroundColor: "#ccc"}}>
                          <div className='col col-2'>
                             <p className='text-dark p-0'>{index + 1}</p>
                         </div>
@@ -45,6 +46,25 @@ const Table = () => {
                     </div>
                 );
               })}
+                
+                        {badTimes.length &&
+                            <div className='row' >
+                            <div className='col col-2'>
+                               <p className='text-dark p-0'>Total</p>
+                           </div>
+                           <div className='col col-5'>
+                               <p className='text-dark'>{badTimes.reduce((prev,current) => {
+                                   return prev + current
+                               })} ms</p>
+                           </div>
+                           <div className='col col-5'>
+                                   <p className='text-dark'>{goodTimes.reduce((prev,current) => prev + current)} ms</p>
+                           </div>
+                   </div>  
+                        }
+                        
+                        
+                    
                 </div>
               
             </div>
