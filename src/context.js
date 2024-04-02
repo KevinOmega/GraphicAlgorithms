@@ -6,9 +6,10 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [itemSize, setItemSize] = useState(5);
-  const [sizeMatrix,setSizeMatrix] = useState(80);
+  const [sizeMatrix,setSizeMatrix] = useState(20);
   const [matrix,setMatrix] = useState({});
-  const [algorithms,setAlgorithms] = useState(1)
+  const [algorithms,setAlgorithms] = useState(1);
+  const [testMode,setTestMode] = useState(true);
   const [parameter,setParameters] = useState({
     x1 : 0,x2 : sizeMatrix - 1,y1: 0, y2 : sizeMatrix - 1,
     xc : Math.round(sizeMatrix/2),yc : Math.round(sizeMatrix/2), r : Math.round(sizeMatrix/2)
@@ -29,28 +30,44 @@ const AppProvider = ({ children }) => {
   }
 
   const generateBtn = async() => {
-    
+    let n = 1;
+    if(testMode){
+      n = 40;
+    }
     switch (Number(algorithms)) {
 
       case 1:
           let {x1,x2,y1,y2} = parameter;
-          let index = 0;
 
-          const interval = setInterval(() => {
-            if(index % 2){
-              drawLine(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"left");
-              DDA(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"right");
-            }else{
-              drawLine(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"left");
-              DDA(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"right");
-            }
+          
+          for (let index = 0; index < n; index++) {    
+            drawLine(Number(x1),Number(y1),Number(x2),Number(y2),"left");
+            DDA(Number(x1),Number(y1 ),Number(x2),Number(y2  ),"right");
+            let sleepTime = Math.sqrt(Math.pow(x2 - x1,2) + Math.pow(y2 - y1,2));
+            console.log(sleepTime,"sleep")
+            await sleep(sleepTime * delay)
+            x1 = Math.floor(Math.random() * sizeMatrix);
+            x2 = Math.floor(Math.random() * sizeMatrix);
+            y1 = Math.floor(Math.random() * sizeMatrix);
+            y2 = Math.floor(Math.random() * sizeMatrix);
+          }
+            
 
-            index++;
-            if(index > sizeMatrix / 2){
-              clearInterval(interval);
-            }
+          // const interval = setInterval(() => {
+          //   if(index % 2){
+          //     drawLine(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"left");
+          //     DDA(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"right");
+          //   }else{
+          //     drawLine(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"left");
+          //     DDA(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"right");
+          //   }
 
-          },1000)
+          //   index++;
+          //   if(index > sizeMatrix / 2){
+          //     clearInterval(interval);
+          //   }
+
+          // },1000)
 
           
         
@@ -223,7 +240,8 @@ const AppProvider = ({ children }) => {
     setDelay,
     clean,
     goodTimes,
-    badTimes
+    badTimes,
+    setTestMode
      }}>
       {children}
     </AppContext.Provider>
