@@ -37,7 +37,7 @@ const Parameter = () => {
                 </div>
             </div>
           )
-    }else if(Number(algorithms) === 2){
+    }else if(Number(algorithms) >= 2){
         return(
             <div className='form d-flex px-5'>
                 <div className='form-item d-flex flex-column align-items-center justify-content-center'>

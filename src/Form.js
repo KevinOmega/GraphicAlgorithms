@@ -14,6 +14,7 @@ const Form = () => {
         onChange={(e) => setAlgorithms(e.target.value)}>
           <option value={1}>Lineas</option>
           <option value={2}>Circunferencias</option>
+          <option value={3}>Circunferencias Mejorado</option>
     </select>
     <div className='form-item d-flex align-items-start justify-content-center '>
       <label className='form-label me-5'>Delay</label>
