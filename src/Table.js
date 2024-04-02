@@ -3,10 +3,11 @@ import { useGlobalContext } from './context'
 
 const Table = () => {
 
-    const {goodTimes,badTimes} = useGlobalContext();
+    const {goodTimes,badTimes,matrix} = useGlobalContext();
     useEffect(() => {
         console.log(goodTimes,badTimes);
-    },[goodTimes,badTimes])
+        console.log(matrix)
+    },[goodTimes,badTimes,matrix])
 
     if(!goodTimes.length){
         return(<></>)

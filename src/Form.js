@@ -2,7 +2,7 @@ import React from 'react'
 import { useGlobalContext } from './context'
 
 const Form = () => {
-    const {algorithms,setAlgorithms,delay,setDelay} = useGlobalContext(); 
+    const {algorithms,setAlgorithms,delay,setDelay,setTestMode,testMode} = useGlobalContext(); 
 
 
   return (
@@ -19,6 +19,9 @@ const Form = () => {
       <label className='form-label me-5'>Delay</label>
       <input className='form-control h-50' type='number' value={delay} onChange={(e)=>(setDelay(Number(e.target.value)))}></input>
     </div>
+    <button className={`btn ${testMode ? "btn-success" : "btn-light"} h-25`}
+      onClick={() => setTestMode(!testMode)}
+    >Test Mode</button>
     </div>
    
   )

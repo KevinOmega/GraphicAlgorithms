@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { useGetColor } from "./color";
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
@@ -6,24 +7,25 @@ const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
   const [itemSize, setItemSize] = useState(5);
-  const [sizeMatrix,setSizeMatrix] = useState(20);
+  const [sizeMatrix,setSizeMatrix] = useState(50);
   const [matrix,setMatrix] = useState({});
   const [algorithms,setAlgorithms] = useState(1);
-  const [testMode,setTestMode] = useState(true);
+  const [testMode,setTestMode] = useState(false);
   const [parameter,setParameters] = useState({
     x1 : 0,x2 : sizeMatrix - 1,y1: 0, y2 : sizeMatrix - 1,
     xc : Math.round(sizeMatrix/2),yc : Math.round(sizeMatrix/2), r : Math.round(sizeMatrix/2)
   })
-  const [delay,setDelay] = useState(1);
+  const [delay,setDelay] = useState(200);
   const [goodTimes,setGoodTimes] = useState([]);
   const [badTimes,setBadTimes] = useState([]);
 
+  const colorPalette = useGetColor();
 
-  const drawPoint = (tempMatrix,x,y,type) => {
+  const drawPoint = (tempMatrix,x,y,type,color) => {
     if(x < 0 || x > sizeMatrix - 1 || y < 0 || y > sizeMatrix - 1){
       return tempMatrix;
     }else{
-      tempMatrix[y][x] = {...matrix[y][x], [type] : true}
+      tempMatrix[y][x] = {...matrix[y][x], [type] : true, color}
       return tempMatrix;
     }
     
@@ -41,8 +43,8 @@ const AppProvider = ({ children }) => {
 
           
           for (let index = 0; index < n; index++) {    
-            drawLine(Number(x1),Number(y1),Number(x2),Number(y2),"left");
-            DDA(Number(x1),Number(y1 ),Number(x2),Number(y2  ),"right");
+            drawLine(Number(x1),Number(y1),Number(x2),Number(y2),"left",colorPalette[index]);
+            DDA(Number(x1),Number(y1 ),Number(x2),Number(y2  ),"right",colorPalette[index]);
             let sleepTime = Math.sqrt(Math.pow(x2 - x1,2) + Math.pow(y2 - y1,2));
             console.log(sleepTime,"sleep")
             await sleep(sleepTime * delay)
@@ -51,41 +53,19 @@ const AppProvider = ({ children }) => {
             y1 = Math.floor(Math.random() * sizeMatrix);
             y2 = Math.floor(Math.random() * sizeMatrix);
           }
-            
-
-          // const interval = setInterval(() => {
-          //   if(index % 2){
-          //     drawLine(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"left");
-          //     DDA(Number(x1),Number(y1 + (index * 2)),Number(x2 + (index * 2)),Number(y2 + (index * 2)),"right");
-          //   }else{
-          //     drawLine(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"left");
-          //     DDA(Number(sizeMatrix - (x1 )),Number(y1 + (index * 2)),Number(sizeMatrix - (x2 )),Number(y2 - (index * 2)),"right");
-          //   }
-
-          //   index++;
-          //   if(index > sizeMatrix / 2){
-          //     clearInterval(interval);
-          //   }
-
-          // },1000)
-
-          
-        
-
         break;
       case 2:
-          let i = 0;
-          const interval2 = setInterval(() => {
-            let r = 1
-            circunferenciaNormal(Number(parameter.xc),Number(parameter.yc),Number(r + (i * 2)),"left");
-            bresenhamCircunferencia(Number(parameter.xc),Number(parameter.yc),Number(r + (i * 2)),"right");
-            i++;
-            if(i > sizeMatrix / 2){
-              console.log("stop");
-              clearInterval(interval2)
-            }
-          },[2000])
-        
+          let {xc,yc,r} = parameter;
+          for (let index = 0; index < n; index++) {
+            circunferenciaNormal(Number(xc),Number(yc),Number(r),"left",colorPalette[index]);
+            bresenhamCircunferencia(Number(xc),Number(yc),Number(r),"right",colorPalette[index]);
+
+            let sleepTime = (r * 2) + 5;
+            await sleep(sleepTime * delay);
+            xc = Math.round(Math.random() * sizeMatrix);
+            yc = Math.round(Math.random() * sizeMatrix);
+            r = Math.round(Math.random() * (sizeMatrix / 2));
+          }  
         break;
       default:
         break;
@@ -93,7 +73,7 @@ const AppProvider = ({ children }) => {
     
   }
 
-    const bresenhamCircunferencia = async(xc,yc,r,type) => {
+    const bresenhamCircunferencia = async(xc,yc,r,type,color) => {
       const startTime = performance.now();
       const tempMatrix = matrix;
       let x = 0;
@@ -101,14 +81,14 @@ const AppProvider = ({ children }) => {
       let d = 3 - 2 * r;
       while (x <= y) {
         
-          setMatrix({...drawPoint(tempMatrix,xc + x,yc + y,type)});
-          setMatrix({...drawPoint(tempMatrix,xc + y,yc + x,type)});
-          setMatrix({...drawPoint(tempMatrix,xc - x,yc + y,type)});
-          setMatrix({...drawPoint(tempMatrix,xc - y,yc + x,type)});
-          setMatrix({...drawPoint(tempMatrix,xc - x,yc - y,type)});
-          setMatrix({...drawPoint(tempMatrix,xc - y,yc - x,type)});
-          setMatrix({...drawPoint(tempMatrix,xc + x,yc - y,type)});
-          setMatrix({...drawPoint(tempMatrix,xc + y,yc - x,type)});
+          setMatrix({...drawPoint(tempMatrix,xc + x,yc + y,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc + y,yc + x,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc - x,yc + y,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc - y,yc + x,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc - x,yc - y,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc - y,yc - x,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc + x,yc - y,type, color)});
+          setMatrix({...drawPoint(tempMatrix,xc + y,yc - x,type, color)});
 
           if (d <= 0) {
             d += 4 * x + 6;
@@ -125,7 +105,7 @@ const AppProvider = ({ children }) => {
     }
 
 
-    const circunferenciaNormal = async(xc,yc,r,type) => {
+    const circunferenciaNormal = async(xc,yc,r,type,color) => {
       const startTime = performance.now();
       const tempMatrix = matrix;
       for (let x = 0; x < sizeMatrix; x++) {
@@ -134,8 +114,8 @@ const AppProvider = ({ children }) => {
           let y1 = yc + Math.round(Math.sqrt(operation));
           let y2 = yc - Math.round(Math.sqrt(operation));
           await sleep(delay).then(() => {
-            setMatrix({...drawPoint(tempMatrix,x,y1,type)});
-            setMatrix({...drawPoint(tempMatrix,x,y2,type)});
+            setMatrix({...drawPoint(tempMatrix,x,y1,type,color)});
+            setMatrix({...drawPoint(tempMatrix,x,y2,type,color)});
           });
         }
       }
@@ -144,7 +124,7 @@ const AppProvider = ({ children }) => {
       setBadTimes((badTimes) => [...badTimes,totalTime]);
     }
 
-    const drawLine = async(x1, y1, x2, y2,type) => {
+    const drawLine = async(x1, y1, x2, y2,type,color) => {
       const startTime = performance.now();
       const tempMatrix = matrix;
       let m = (y2 - y1) / (x2 - x1);
@@ -158,7 +138,7 @@ const AppProvider = ({ children }) => {
               x1 += dx;
               let y = m * x1 + b;
               
-                setMatrix({...drawPoint(tempMatrix,x1, Math.round(y),type)});
+                setMatrix({...drawPoint(tempMatrix,x1, Math.round(y),type,color)});
                 await sleep(delay )     
           }
            
@@ -168,7 +148,7 @@ const AppProvider = ({ children }) => {
               y1 += dy;
               let x = (y1 - b) / m;
               
-                setMatrix({...drawPoint(tempMatrix,Math.round(x) , y1 ,type)});
+                setMatrix({...drawPoint(tempMatrix,Math.round(x) , y1 ,type,color)});
                 await sleep(delay)
           }
       }
@@ -177,7 +157,7 @@ const AppProvider = ({ children }) => {
       setGoodTimes((goodTimes) => [...goodTimes,totalTime]);  
   }
 
-  const DDA = async(x0, y0, x1, y1,type) =>  {
+  const DDA = async(x0, y0, x1, y1,type,color) =>  {
     const startTime = performance.now();
     const tempMatrix = matrix;
     let dx = x1 - x0;
@@ -192,7 +172,7 @@ const AppProvider = ({ children }) => {
     }
     if (steps === 0) {
       
-        setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type)});
+        setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type,color)});
         await sleep(delay)
         return;
     }
@@ -200,7 +180,7 @@ const AppProvider = ({ children }) => {
     let ys = dy / steps;
         for (let i = 0; i <= steps; i++) {
           
-            setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type)});
+            setMatrix({...drawPoint(tempMatrix,Math.round(x), Math.round(y),type,color)});
             x = x + xs;
             y = y + ys;
           await sleep(delay)
@@ -241,7 +221,8 @@ const AppProvider = ({ children }) => {
     clean,
     goodTimes,
     badTimes,
-    setTestMode
+    testMode,
+    setTestMode,
      }}>
       {children}
     </AppContext.Provider>

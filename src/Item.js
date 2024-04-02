@@ -20,7 +20,7 @@ const Item = ({id_row,id_col,type}) => {
   return (
     <div className='item' style={{width: itemSize,
                                  height: itemSize, 
-                                 backgroundColor: `${paint ? "#1f9" : "transparent"}`}}>
+                                 backgroundColor: `${paint ? matrix[id_row][id_col].color : "transparent"}`}}>
     </div>
   )
 }
