@@ -6,7 +6,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const AppContext = createContext();
 
 const AppProvider = ({ children }) => {
-  const [itemSize, setItemSize] = useState(5);
+  const [itemSize, setItemSize] = useState(10);
   const [sizeMatrix,setSizeMatrix] = useState(50);
   const [matrix,setMatrix] = useState({});
   const [algorithms,setAlgorithms] = useState(1);
