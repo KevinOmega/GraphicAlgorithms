@@ -9,7 +9,7 @@ const useGetColor = () => {
         "#007777", // Azure
         "#Ffaa00", // Beige
         "#FFE4C4", // Bisque
-        "#000000", // Black
+        "#ffff00", // Black
         "#FFEBCD", // Blanched Almond
         "#0000FF", // Blue
         "#8A2BE2", // Blue Violet
@@ -41,6 +41,7 @@ const useGetColor = () => {
         "#9400D3", // Dark Violet
         "#FF1493", // Deep Pink
         "#00BFFF", // Deep Sky Blue
+        "#a1f199"
       ];
 }
 

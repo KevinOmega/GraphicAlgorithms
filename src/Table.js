@@ -1,13 +1,11 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useGlobalContext } from './context'
+import { useGetColor } from './color';
 
 const Table = () => {
 
-    const {goodTimes,badTimes,matrix} = useGlobalContext();
-    useEffect(() => {
-        console.log(goodTimes,badTimes);
-        console.log(matrix)
-    },[goodTimes,badTimes,matrix])
+    const {goodTimes,badTimes} = useGlobalContext();
+    const colorPalette = useGetColor();
 
     if(!goodTimes.length){
         return(<></>)
@@ -16,8 +14,11 @@ const Table = () => {
             <div className='table'>
                 <div className='table-center'>
                 <div className='row'>
-                        <div className='col col-2'>
+                        <div className='col col-1'>
                             <p className='text-dark'>N</p>
+                        </div>
+                        <div className='col col-1'>
+                            <p className='text-dark'>Color</p>
                         </div>
                         
                          <div className='col col-5'>
@@ -33,8 +34,11 @@ const Table = () => {
                     console.log(time,"time")
                 return (
                     <div className='row' key={index} style={{backgroundColor: "#ccc"}}>
-                         <div className='col col-2'>
+                         <div className='col col-1'>
                             <p className='text-dark p-0'>{index + 1}</p>
+                        </div>
+                        <div className='col col-1'>
+                            <div className='rect' style={{backgroundColor: colorPalette[index]}}></div>
                         </div>
                         <div className='col col-5'>
                             <p className='text-dark'>{badTimes[index]} ms</p>
@@ -61,10 +65,7 @@ const Table = () => {
                                    <p className='text-dark'>{goodTimes.reduce((prev,current) => prev + current)} ms</p>
                            </div>
                    </div>  
-                        }
-                        
-                        
-                    
+                        } 
                 </div>
               
             </div>
